@@ -41,16 +41,6 @@
 
 \frame{\titlepage}
 
-\begin{frame}{Abstract (for posterity)}
-    The MPI-3 standard provides a portable interface to interprocess 
-    shared-memory through the RMA functionality. This allow applications 
-    to leverage shared-memory programming within a strictly MPI paradigm, 
-    which mitigates some of the challenges of MPI+X programming using 
-    threads associated with shared-by-default behavior and race conditions, 
-    NUMA and Amdahl's law. I will describe the MPI shared-memory capability 
-    and how it might be targeted by existing multithreaded libraries.
-\end{frame}
-
 \begin{frame}{}
 \includegraphics[scale=0.33,angle=0]{intel-legal} \
 \end{frame}
@@ -66,6 +56,27 @@
         \item Performance numbers for non-Intel platforms were obtained by non-Intel people.
         \item Hanlon's Razor.
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Abstract (for posterity)}
+    The MPI-3 standard provides a portable interface to interprocess 
+    shared-memory through the RMA functionality. This allow applications 
+    to leverage shared-memory programming within a strictly MPI paradigm, 
+    which mitigates some of the challenges of MPI+X programming using 
+    threads associated with shared-by-default behavior and race conditions, 
+    NUMA and Amdahl's law. I will describe the MPI shared-memory capability 
+    and how it might be targeted by existing multithreaded libraries.
+\end{frame}
+
+\begin{frame}{Quiz}
+    What is MPI? \\
+    (A) A bulky, bulk-synchronous model. \\
+    (B) The programing model based upon Send-Recv. \\
+    (C) An explicit, CSP-like, private-address-space programming model. \\
+    (D) An industry-standard runtime API encapsulating
+        1-, 2- and $N$-sided blocking and nonblocking communication
+        and a whole bunch of utility functions for library development. 
+
 \end{frame}
 
 \end{document}
