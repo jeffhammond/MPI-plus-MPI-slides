@@ -27,7 +27,6 @@ int main(int argc, char * argv[])
 
     MPI_Win_sync(shwin);
     MPI_Barrier(MPI_COMM_NODE);
-    MPI_Win_sync(shwin);
 
     MPI_Aint rsize[nsize];
     int rdisp[nsize];
