@@ -1,7 +1,7 @@
 CC    := mpicc
-CFLAGS = -g -O2 -Wall -std=c99
+CFLAGS = -g -O2 -Wall -std=c99 -fopenmp
 
-TESTS = hello-mpi
+TESTS = hello-mpi hello-omp
 
 all: $(TESTS)
 
