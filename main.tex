@@ -11,8 +11,11 @@
 \usepackage{color}
 \usepackage{comment}
 \usepackage{hyperref}
-% \usepackage{listings}
+\usepackage{listings}
 \usepackage{tabularx}
+\usepackage{verbatim}
+
+%\lstnewenvironment{code}{\lstset{language=C,basicstyle=\scriptsize\ttfamily}}{}
 
 \definecolor{dred}{RGB}{200,0,0}
 \definecolor{dgreen}{RGB}{0,150,0}
@@ -68,7 +71,7 @@
     and how it might be targeted by existing multithreaded libraries.
 \end{frame}
 
-\begin{frame}{Quiz}
+\begin{frame}{Quiz} \Large
     What is MPI? \\
     (A) A bulky, bulk-synchronous model. \\
     (B) The programing model based upon Send-Recv. \\
@@ -76,7 +79,113 @@
     (D) An industry-standard runtime API encapsulating
         1-, 2- and $N$-sided blocking and nonblocking communication
         and a whole bunch of utility functions for library development. 
+\end{frame}
 
+\begin{frame}{The MPI You Know}
+    \begin{tt}
+        MPI\_Init(..); \\
+        MPI\_Comm\_size(..); MPI\_Comm\_rank(..); \\
+        MPI\_Barrier(..); MPI\_Bcast(..); \\
+        MPI\_Reduce(..); MPI\_Allreduce(..); \\
+        MPI\_Gather(..); MPI\_Allgather(..); \\
+        MPI\_Scatter(..); MPI\_Alltoall(..); \\
+        MPI\_Reduce\_scatter(..); MPI\_Reduce\_scatter\_block(..); \\
+        MPI\_Send(..); MPI\_Recv(..); /* [b,nb] x [r,s,b] */ \\
+        \ldots \\
+        MPI\_Finalize();
+    \end{tt}
+\end{frame}
+
+\begin{frame}{The MPI You Don't 1}
+    \begin{tt}
+        MPI\_Ibarrier(..); MPI\_Ibcast(..); \\
+        MPI\_Ireduce(..); MPI\_Iallreduce(..); \\
+        MPI\_Igather(..); MPI\_Iallgather(..); \\
+        MPI\_Iscatter(..); MPI\_Ialltoall(..); \\
+        MPI\_Ireduce\_scatter(..); MPI\_Ireduce\_scatter\_block(..); \\
+    \end{tt}
+    \vskip2ex
+    Go forth a write bulk-asynchronous code!
+\end{frame}
+
+\begin{frame}{The MPI You Don't 2}
+    \begin{tt}
+        MPI\_Dist\_graph\_create\_adjacent(..); \\
+        MPI\_Neighborhood\_allgather(..); \\
+        MPI\_Neighborhood\_allgatherv(..); \\
+        MPI\_Neighborhood\_alltoall(..); \\
+    \end{tt}
+    \vskip2ex
+    Virtual topologies corresponding to algorithmic topology;
+    additional semantic information enables MPI to optimize.
+\end{frame}
+
+\begin{frame}{The MPI You Don't 3}
+    \begin{tt}
+        Win\_create(..); Win\_allocate(..); \\
+        Win\_allocate\_shared(..); Win\_shared\_query(..); \\
+        Win\_create\_dynamic(..); Win\_attach(..); Win\_detach(..); \\
+        Put(..); Get(..); Accumulate(..); \\
+        Fetch\_and\_op(..); Compare\_and\_swap(..); \\
+        Win\_lock(..); Win\_lock\_all(..); \\
+        Win\_flush(\_local)(\_all)(..); Win\_sync(..); \\
+        \ldots
+    \end{tt}
+    \vskip2ex
+    MPI-3 is a superset of ARMCI and OpenSHMEM\ldots
+    \vskip2ex
+    \href{http://wiki.mpich.org/armci-mpi/}{http://wiki.mpich.org/armci-mpi/} \\
+    \href{https://github.com/jeffhammond/oshmpi/}{https://github.com/jeffhammond/oshmpi/}
+\end{frame}
+
+\begin{frame}{Shared Memory implementations}
+    Historically, SysV shared memory used, but painfully.
+    \vskip1ex
+    POSIX shared memory good, but Windows, BGQ, BSD/Mach\ldots
+    \vskip1ex
+    In HPC, we have XPMEM (Cray and SGI).
+    \vskip1ex
+    MPI processes can be threads, in which case, all is shared.
+    \vskip1ex
+    The purpose of MPI is to standardize best practice!
+\end{frame}
+
+\begin{frame}{MPI-3 Shared Memory}\Large
+    Limitations: \\
+    \begin{itemize}
+        \item Only defined for cache-coherent systems (WIN\_MODEL=UNIFIED).
+        \item Allocated collectively.
+        \item Memory allocated contiguously \textit{by default}.
+    \end{itemize}
+    Features: \\
+    \begin{itemize}
+        \item Works together with RMA ops (e.g. atomics).
+        \item Noncontiguous allocation upon request (hint).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Why should you use this?}\LARGE
+    Shared memory programming is hard!!!! 
+\end{frame}
+
+\input{threads}
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}
 \end{frame}
 
 \end{document}
