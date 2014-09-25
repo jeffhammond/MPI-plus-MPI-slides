@@ -5,8 +5,6 @@
 
 int main(int argc, char * argv[])
 {
-    int ** shrptrs;
-
     _Pragma("omp parallel")
     {
         int nrank = omp_get_thread_num();
@@ -14,6 +12,7 @@ int main(int argc, char * argv[])
 
         printf("thread %d of %d\n", nrank, nsize);
 
+        static int ** shrptrs;
         _Pragma("omp master")
         {
             shrptrs = malloc(nsize*sizeof(int*));
