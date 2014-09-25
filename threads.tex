@@ -95,9 +95,10 @@ n = 10000000   a: 0.018938 b: 0.011763
 n = 100000000  a: 0.123872 b: 0.072453 
 n = 1000000000 a: 0.915020 b: 0.811122 
 \end{verbatim}
-The first-order effect requires a multi-socket system so you will not see this on your laptop.  Run on an AMD Magny Cours for the ``best'' effect.
+The first-order effect requires a multi-socket system so you will not see this on your laptop.
 \vskip1ex
-For more complicated data access patterns, you may see this even with parallel initialization.  In this case, consider (1) hiding latency, (2) not being bandwidth bound, and (3) task parallelism.
+For more complicated data access patterns, you may see this even with parallel initialization.  
+In this case, consider (1) hiding latency, (2) not being bandwidth bound, and (3) task parallelism.
 \end{frame}
 
 \begin{frame}{MPI+Y} \large 
