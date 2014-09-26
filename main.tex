@@ -197,7 +197,7 @@
 Never confuse portability with portable performance!
 \end{frame}
 
-\begin{frame}{Using MPI+OpenMP effectively} \Large 
+\begin{frame}{Using MPI+OpenMP effectively} \large 
 \begin{itemize}
 	\item Private data should behave like MPI but with load-store for comm.
 	\item Shared data leads to cache reuse but also false sharing.
@@ -269,6 +269,7 @@ from MPI codes evolved into MPI+OpenMP codes.
 \end{frame}
 
 \begin{frame}[fragile]{NUMA}
+This is a toy DAXPY-like test I wrote for an ALCF tutorial\ldots
 %See \texttt{./src/omp/numa.c} % where is this code?
 \begin{verbatim}
 > for n in 1e6 1e7 1e8 1e9 ; do ./numa.x $n ; done
