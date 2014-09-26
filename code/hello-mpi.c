@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
     MPI_Info win_info;
     MPI_Info_create(&win_info);
     MPI_Info_set(win_info, "alloc_shared_noncontig", "true");
-    MPI_Win_allocate_shared(sizeof(int), sizeof(int), win_info, MPI_COMM_WORLD, &shptr, &shwin);
+    MPI_Win_allocate_shared(sizeof(int), sizeof(int), win_info, MPI_COMM_NODE, &shptr, &shwin);
     MPI_Info_free(&win_info);
 
     MPI_Win_lock_all(0 /* assertion */, shwin);
