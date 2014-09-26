@@ -10,4 +10,5 @@ all: $(TESTS)
 
 clean:
 	-rm -f $(TESTS)
+	-rm -rf *.dSYM
 
