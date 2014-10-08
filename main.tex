@@ -35,7 +35,7 @@
   \pgfuseimage{intel-logo}
 }
 
-\title[MPI+MPI]{The MPI+MPI programming model and why we need shared-memory MPI libraries}
+\title[PGAS Tutorial]{Overview of HW/SW landscape for PGAS}
 \author[Jeff Hammond]{Jeff Hammond}
 \institute[Intel Labs]{Extreme Scalability Group \& Parallel Computing Lab\\ Intel Corporation (Portland, OR)}
 \date[]{26 September 2014}
@@ -48,135 +48,25 @@
 \includegraphics[scale=0.33,angle=0]{intel-legal} \
 \end{frame}
 
-\begin{frame}{Extreme Scalability Group Disclaimer}
-    \begin{itemize}
-        \item I work in Intel Labs and therefore don't know anything about Intel products.
-        \item I work for Intel, but I am not an official spokesman for Intel.
-              Hence anything I say are my words, not Intel's.
-              Furthermore, I do not speak for my collaborators,
-              whether they be inside or outside Intel.
-        \item You may or may not be able to reproduce any performance numbers I report.
-        \item Performance numbers for non-Intel platforms were obtained by non-Intel people.
-        \item Hanlon's Razor.
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Abstract (for posterity)} \Large
-    The MPI-3 standard provides a portable interface to interprocess 
-    shared-memory through the RMA functionality. This allow applications 
-    to leverage shared-memory programming within a strictly MPI paradigm, 
-    which mitigates some of the challenges of MPI+X programming using 
-    threads associated with shared-by-default behavior and race conditions, 
-    NUMA and Amdahl's law. I will describe the MPI shared-memory capability 
-    and how it might be targeted by existing multithreaded libraries.
-\end{frame}
-
 \begin{frame}{} \LARGE
   \begin{center}
-      \textbf{MPI-3}
+      \textbf{From Intel Xeon Phi to PGAS\ldots}
   \end{center}
 \end{frame}
 
-\begin{frame}{Quiz} \Large
-    What is \textbf{MPI}? \\
-    (A) A bulky, bulk-synchronous model. \\
-    (B) The programing model of Send-Recv. \\
-    (C) An explicit, CSP-like, private-address-space programming model. \\
-    (D) An industry-standard runtime API encapsulating
-        1-, 2- and $N$-sided blocking and nonblocking communication
-        and a whole bunch of utility functions for library development. \\
-    (E) The assembling language of parallel computing!!
-\end{frame}
-
-\begin{frame}{The MPI You Know}
-    \begin{tt}
-        MPI\_Init(..); \\
-        MPI\_Comm\_size(..); MPI\_Comm\_rank(..); \\
-        MPI\_Barrier(..); MPI\_Bcast(..); \\
-        MPI\_Reduce(..); MPI\_Allreduce(..); \\
-        MPI\_Gather(..); MPI\_Allgather(..); \\
-        MPI\_Scatter(..); MPI\_Alltoall(..); \\
-        MPI\_Reduce\_scatter(..); MPI\_Reduce\_scatter\_block(..); \\
-        MPI\_Send(..); MPI\_Recv(..); /* [b,nb] x [r,s,b] */ \\
-        \ldots \\
-        MPI\_Finalize();
-    \end{tt}
-\end{frame}
-
-\begin{frame}{The MPI You Have Heard of But Don't Use}
-    \begin{tt}
-        MPI\_Ibarrier(..); MPI\_Ibcast(..); \\
-        MPI\_Ireduce(..); MPI\_Iallreduce(..); \\
-        MPI\_Igather(..); MPI\_Iallgather(..); \\
-        MPI\_Iscatter(..); MPI\_Ialltoall(..); \\
-        MPI\_Ireduce\_scatter(..); MPI\_Ireduce\_scatter\_block(..); \\
-    \end{tt}
-    \vskip5ex
-    Go forth a write bulk-asynchronous code!
-\end{frame}
-
-\begin{frame}{The MPI You Don't Know But Should}
-    \begin{tt}
-        MPI\_Comm\_create\_group(..); \\
-        MPI\_Icomm\_dup(..); \\
-        \ldots \\
-        MPI\_Dist\_graph\_create\_adjacent(..); \\
-        MPI\_Neighborhood\_allgather(..); \\
-        MPI\_Neighborhood\_allgatherv(..); \\
-        MPI\_Neighborhood\_alltoall(..); \\
-    \end{tt}
-    \vskip2ex
-    Virtual topologies corresponding to algorithmic topology;
-    additional semantic information enables MPI to optimize.
-\end{frame}
-
-\begin{frame}{The MPI You Don't Know and Might Not Want To}
-    \begin{tt}
-        Win\_create(..); Win\_allocate(..); \\
-        Win\_allocate\_shared(..); Win\_shared\_query(..); \\
-        Win\_create\_dynamic(..); Win\_attach(..); Win\_detach(..); \\
-        Put(..); Get(..); Accumulate(..); \\
-        Fetch\_and\_op(..); Compare\_and\_swap(..); \\
-        Win\_lock(..); Win\_lock\_all(..); \\
-        Win\_flush(\_local)(\_all)(..); Win\_sync(..); \\
-        \ldots
-    \end{tt}
-    \vskip2ex
-    MPI-3 is a superset of ARMCI and OpenSHMEM\ldots
-    \vskip2ex
-    \href{http://wiki.mpich.org/armci-mpi/}{http://wiki.mpich.org/armci-mpi/} \\
-    \href{https://github.com/jeffhammond/oshmpi/}{https://github.com/jeffhammond/oshmpi/}
-\end{frame}
-
-\begin{frame}{Shared Memory implementations} \large
-    What is MPI\_Win\_allocate\_shared(..)?
-    \vskip1ex
-    Historically, SysV shared memory used, but painfully.
-    \vskip1ex
-    POSIX shared memory good, but Windows, BSD/Mach\ldots
-    \vskip1ex
-    In HPC, we have XPMEM (Cray and SGI).  And BGQ\ldots
-    \vskip1ex
-    MPI processes can be threads, in which case, all is shared.
-    \vskip1ex
-    The purpose of MPI is to standardize best practice!
-    \vskip1ex
-    Shared-memory is a ``best practice.''
-\end{frame}
-
-\begin{frame}{MPI-3 Shared Memory}\Large
-    Limitations: \\
+\begin{frame}{Motivation} \large
     \begin{itemize}
-        \item Only defined for cache-coherent systems (WIN\_MODEL=UNIFIED).
-        \item Allocated collectively.
-        \item Memory allocated contiguously \textit{by default}.
+        \item Generation 1 (Knights Corner) Xeon Phi is coprocessor.
+        \item Native supported, but offload prevalent.  PGAS not about offload.
+        \item PCI bus is a huge impediment to performance and programmability.
+        \item Generation 2 (Knights Landing) socketized, packaged with Aries network.
+        \item The future is many-core with a tightly integrated network.
+        \item The best proxy for a KNL node is a KNC card.
     \end{itemize}
-    Features: \\
-    \begin{itemize}
-        \item It's SHARED MEMORY: what don't you love?
-        \item Works together with RMA ops (e.g. atomics).
-        \item Noncontiguous allocation upon request (hint).
-    \end{itemize}
+    See for details: \\
+    \url{http://tinyurl.com/ltjmdvj} \url{http://tinyurl.com/myxzr3j}
+    % http://goparallel.sourceforge.net/nersc-supercomputer-first-use-intels-next-gen-knights-landing/
+    % http://newsroom.intel.com/community/intel\_newsroom/blog/2014/06/23/intel-re-architects-the-fundamental-building-block-for-high-performance-computing
 \end{frame}
 
 \begin{frame}{} \LARGE
@@ -192,7 +82,7 @@
 	\item Intel$^\circledR$ has Cilk$^\circledR$ and TBB.
 	\item OpenCL is not a good model for application programmers
           and has no magic for portable performance (since such magic does not exist).
-	\item CUDA$^\circledR$ is an X for only one type of hardware (ignoring Ocelot).
+    \item Do C++11 thread/async features make sense in HPC?
 \end{itemize}
 Never confuse portability with portable performance!
 \end{frame}
@@ -201,7 +91,7 @@ Never confuse portability with portable performance!
 \begin{itemize}
 	\item Private data should behave like MPI but with load-store for comm.
 	\item Shared data leads to cache reuse but also false sharing.
-	\item NUMA is going to eat you alive.  BG is a rare exception.
+	\item NUMA is going to eat you alive.  Blue Gene is a rare exception.
 	\item OpenMP offers little to no solution for NUMA.
 	\item If you do everything else right, Amdahl is going to get you.
 \end{itemize}
@@ -268,20 +158,16 @@ from MPI codes evolved into MPI+OpenMP codes.
   \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{NUMA}
-This is a toy DAXPY-like test I wrote for an ALCF tutorial\ldots
-%See \texttt{./src/omp/numa.c} % where is this code?
-\begin{verbatim}
-> for n in 1e6 1e7 1e8 1e9 ; do ./numa.x $n ; done
-n = 1000000    a: 0.009927 b: 0.009947 
-n = 10000000   a: 0.018938 b: 0.011763 
-n = 100000000  a: 0.123872 b: 0.072453 
-n = 1000000000 a: 0.915020 b: 0.811122 
-\end{verbatim}
-The first-order effect requires a multi-socket system.
-\vskip1ex
-For more complicated data access patterns, you may see this even with parallel initialization.  
-%In this case, consider (1) hiding latency, (2) not being bandwidth bound, and (3) task parallelism.
+\begin{frame}{MPI funneling bad} \Large
+    \begin{itemize}
+        \item Transition to parallelism for increased performance
+              within processors and networks.
+        \item Must exploit network parallelism to max out hardware
+              for small messages.
+        \item More overlap opportunity and latency-hiding with 
+              greater communication concurrency.
+        \item Blue Gene/Q good example of needing+supporting network parallelism.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{} \LARGE
@@ -298,6 +184,7 @@ For more complicated data access patterns, you may see this even with parallel i
     \item Be sure you have a communicator per thread with collectives\ldots
     \item If your low-level network stack is not thread-safe\ldots
     \item God help you if you want to mix more than one threading model!$^{1}$
+    \item Jim Dinan will bring about \texttt{MPI\_WORLD\_PEACE} with endpoints :-)
 \end{itemize}
 \vskip1ex
 {\small $^{1}$ See \url{https://www.ieeetcsc.org/activities/blog/challenges_for_interoperability_of_runtime_systems_in_scientific_applications} }
@@ -310,7 +197,7 @@ For more complicated data access patterns, you may see this even with parallel i
 \end{frame}
 
 \begin{frame}{Best of all worlds?}
-    MPI-1 between nodes; MPI-Shm within the node\ldots
+    MPI-3 between nodes; MPI-Shm within the node\ldots
     \begin{itemize}
         \item Private by default; shared by request.  Safe.
         \item Memory affinity to each core; NUMA issues should be rare.
@@ -335,46 +222,72 @@ For more complicated data access patterns, you may see this even with parallel i
     \end{itemize}
 \end{frame}
 
-\begin{frame}{MPI-Shm libraries 1} \large
-    \textbf{BLIS} should be the first MPI-Shm library:
+\begin{frame}{} \LARGE
+  \begin{center}
+      \textbf{PGAS}
+  \end{center}
+\end{frame}
+
+\begin{frame}{PGAS - Pro} \Large
     \begin{itemize}
-        \item BLIS thread communicator maps perfectly to MPI communicator.
-        \item Need to put BLIS communicator outside of API calls,
-              but that's the only major change I can see.
-        \item Tyler's implementation with OpenMP is trivially mapped
-              to MPI calls.
-        \item API refactoring for this is incredibly useful in threading
-              models for task-parallelism and batching.
+        \item Similar to MPI$\otimes$X and MPI+MPI.
+        \item No fork.  No join.
+        \item Always had the NUMA situation in-order.
+        \item Not shared memory.  False sharing less likely.
     \end{itemize}
 \end{frame}
 
-\begin{frame}{MPI-Shm libraries 2} \large
-    \textbf{Elemental} should be the second MPI-Shm library:
+\begin{frame}{PGAS - Con} \Large
     \begin{itemize}
-        \item Does OpenMP really meet the needs of Elemental within a node?
-        \item Lots of people don't want to think about hybrid, just MPI-only.
-        \item Elemental with MPI-Shm within node could compete with threaded
-              libraries and might beat them because of well-known fork-join
-              issues in LAPACK.
-        \item DistMatrix object hides all of the allocation issues internally,
-              as it's already collective.
-        \item We have an MPI-3 RMA AXPY implementation as a related proof-of-concept.
+        \item Looks flat.  Multi-node multi-core is not.
+        \item Implicit communication is evil (duck!).
+        \item Silent on SIMD issues for wide vector FPU.
+        \item Implementation situation\ldots
+        \item Wider portability issues\ldots
+        \item RDMA through PCI is extra hops.
     \end{itemize}
 \end{frame}
 
 \begin{frame}{} \LARGE
   \begin{center}
-      \textbf{MPI is dead.  Long live MPI!}
+      \textbf{PGAS Hybrids}
   \end{center}
 \end{frame}
 
-\begin{frame}{Acknowledgements} \Large
-    Tyler Smith and Jed Brown, for explaining and discussing thread communicators at length.
-    \vskip1ex
-    Jack Poulson, for Elemental discussions over the years.
-    \vskip1ex
-    NUMA and Amdahl's Law, for holding OpenMP back and keeping MPI-only competitive in spite
-    of the ridiculous cost of Send-Recv within a shared-memory domain.
+\begin{frame}{PGAS+X} \Large
+    \begin{itemize}
+        \item Eliminate the flatness - use X within node.
+        \item X might help with SIMD, other fine-grain issues.
+        \item Runtime and implementation difficulties?
+        \item Less of an issue if/when PGAS uses threads within the node.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{MPI+PGAS} \Large
+    \begin{itemize}
+        \item MPI-1 very successful for distributed memory;
+              PGAS obviously going to work well in shared-memory.
+        \item PGAS is vastly superior to non-expert OpenMP w.r.t. fork-join.
+        \item MPI-PGAS rivalry created unfortunate sociological barrier to this model.
+        \item Since MPI-3 RMA is PGAS, most likely instantiation is MPI+MPI :-)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{} \LARGE
+  \begin{center}
+      \textbf{The Rest of the Day}
+  \end{center}
+\end{frame}
+
+\begin{frame}{} \Large
+    \begin{itemize}
+        \item Bottom-up: SFI$\rightarrow$MPI-3$\rightarrow$UPC
+        \item MVAPICH2-X brings MPI-3 and PGAS together.
+        \item OSHMPI (OpenSHMEM over MPI-3) can be used on MIC.
+        \item Tutorial hardware generously provided by Sameer.
+        \item Performance experiments discouraged for multiple reasons.
+        \item Hands-on starts out structure\ldots
+    \end{itemize}
 \end{frame}
 
 \end{document}
