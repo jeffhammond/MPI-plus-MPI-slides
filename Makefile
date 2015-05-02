@@ -3,9 +3,10 @@
 all: main.pdf
 
 %.pdf: %.tex
-	@rubber -d $<
+	#@rubber -d $<
+	pdflatex main
 
 clean:
-	@rubber --clean main
+	#@rubber --clean main
 	-rm -f main.synctex.gz*
 	-rm -f main.pdf
